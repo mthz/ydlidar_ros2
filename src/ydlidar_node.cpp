@@ -74,6 +74,7 @@ int main(int argc, char *argv[]) {
   bool m_singleChannel = false;
   bool m_isToFLidar = false;
   bool m_Inverted = true;
+  bool invalid_range_is_inf = false;
 
   node->declare_parameter("port");
   node->get_parameter("port", port);
@@ -120,6 +121,8 @@ int main(int argc, char *argv[]) {
   node->declare_parameter("frequency");
   node->get_parameter("frequency", frequency);
 
+  node->declare_parameter("invalid_range_is_inf");
+  node->get_parameter("invalid_range_is_inf", invalid_range_is_inf);
 
 
 
@@ -203,13 +206,15 @@ int main(int argc, char *argv[]) {
       scan_msg->range_max = scan.config.max_range;
       
       int size = (scan.config.max_angle - scan.config.min_angle)/ scan.config.angle_increment + 1;
-      scan_msg->ranges.resize(size);
+      scan_msg->ranges.resize(size, invalid_range_is_inf ? std::numeric_limits<float>::infinity() : 0.0);
       scan_msg->intensities.resize(size);
       for(int i=0; i < scan.points.size(); i++) {
         int index = std::ceil((scan.points[i].angle - scan.config.min_angle)/scan.config.angle_increment);
         if(index >=0 && index < size) {
-          scan_msg->ranges[index] = scan.points[i].range;
-          scan_msg->intensities[index] = scan.points[i].intensity;
+          if (scan.points[i].range >= scan.config.min_range) {
+            scan_msg->ranges[index] = scan.points[i].range;
+            scan_msg->intensities[index] = scan.points[i].intensity;
+          }
         }
       }
 

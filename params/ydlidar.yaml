@@ -15,3 +15,4 @@ ydlidar_node:
     max_range: 16.0
     min_range: 0.01
     frequency: 10.0
+    invalid_range_is_inf: false

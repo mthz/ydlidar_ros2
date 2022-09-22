@@ -94,6 +94,7 @@ path: [ydlidar.yaml](params/ydlidar.yaml)
 | `ignore_array`      | String                  	| LiDAR filtering angle area, default: ""      			|
 | `samp_rate`       	| int                  	| sampling rate of lidar, default: 9      				|
 | `frequency`       	| float                  	| scan frequency of lidar,default: 10.0      			|
+| `invalid_range_is_infy`       	| bool                  	|Invalid range is inf. true: inf false: 0.0, default: false      			|
 
 </center>
 
